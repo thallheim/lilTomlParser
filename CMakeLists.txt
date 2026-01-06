@@ -9,10 +9,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # ninja/makefile only
 
 project(lilTomlParser VERSION 0.0.1)
 
-# set(SRC)
-# file(GLOB SRC src/*.c src/*.cpp)
-
-# add_library(ltp STATIC ${SRC})
 add_library(ltp STATIC)
 
 target_sources(ltp
