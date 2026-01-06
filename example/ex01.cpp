@@ -1,6 +1,6 @@
 #include <print>
-#include "../include/parser.hpp"
-#include "../include/util.hpp"
+#include <parser.hpp>
+#include <util.hpp>
 
 int main() {
 
