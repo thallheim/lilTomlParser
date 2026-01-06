@@ -50,4 +50,9 @@ alias reconf-make := reconfigure-make
 alias t := test
 [group("Unit tests"), doc("Run all unit tests")]
 @test:
-    ctest --test-dir build/
+    ctest --test-dir build/ --output-on-failure
+
+alias lt := list-tests
+[group("Unit tests"), doc("List available tests")]
+@list-tests:
+    ctest --test-dir build/ -N

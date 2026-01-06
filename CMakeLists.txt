@@ -48,3 +48,9 @@ add_test(
   COMMAND lexer_test
   WORKING_DIRECTORY "tests/"
 )
+
+add_test(
+  NAME utils
+  COMMAND utils_test
+  WORKING_DIRECTORY "tests/"
+)
