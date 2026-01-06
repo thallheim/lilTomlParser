@@ -2,7 +2,6 @@
 #include "../include/config.hpp"
 #include "../include/util.hpp"
 
-#include <cstdlib>
 
 const string heading = "[title]";
 
@@ -20,7 +19,7 @@ int main() {
 
   if (!lex_heading()) tests_ok = false;
 
-  if (!tests_ok) return EXIT_FAILURE;
+  if (!tests_ok) return 1;
   std::println("YES");
-  return EXIT_SUCCESS;
+  return 0;
 }
