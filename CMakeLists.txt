@@ -9,6 +9,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # ninja/makefile only
 
 project(lilTomlParser VERSION 0.0.1)
 
+add_subdirectory(tests)
+enable_testing()
+
 add_library(ltp STATIC)
 
 target_sources(ltp
