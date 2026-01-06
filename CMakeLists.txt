@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.23)
 
 set(CMAKE_CXX_STANDARD 23)
 # set(CMAKE_C_COMPILER "/usr/bin/clang")
@@ -7,16 +7,27 @@ set(CMAKE_C_COMPILER "/usr/bin/gcc")
 set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # ninja/makefile only
 
-project(lilTomlParser)
+project(lilTomlParser VERSION 0.0.1)
 
-set(SRC)
-file(GLOB SRC
-  include/*.h include/*.hpp
-  src/*.c src/*.cpp
+# set(SRC)
+# file(GLOB SRC src/*.c src/*.cpp)
+
+# add_library(ltp STATIC ${SRC})
+add_library(ltp STATIC)
+
+target_sources(ltp
+  PUBLIC
+    FILE_SET HEADERS
+    BASE_DIRS "include/"
+    FILES
+      "include/config.hpp"
+      "include/parser.hpp"
+      "include/util.hpp"
+  PRIVATE
+    "src/config.cpp"
+    "src/parser.cpp"
+    "src/util.cpp"
 )
-
-
-add_library(ltp STATIC ${SRC})
 
 add_compile_options(
   Wall
@@ -32,4 +43,3 @@ target_compile_definitions(ltp PRIVATE
   $<$<CONFIG:Release>:NDEBUG>
 
 )
-
