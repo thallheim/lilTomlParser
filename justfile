@@ -45,3 +45,9 @@ alias reconf-make := reconfigure-make
 [group("configure build"), doc("Reconfigure for Make (--fresh)")]
 @reconfigure-make:
     cmake -B build -S . --fresh
+
+
+alias t := test
+[group("Unit tests"), doc("Run all unit tests")]
+@test:
+    ctest --test-dir build/

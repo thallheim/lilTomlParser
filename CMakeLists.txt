@@ -40,5 +40,11 @@ add_compile_options(
 
 target_compile_definitions(ltp PRIVATE
   $<$<CONFIG:Release>:NDEBUG>
+)
 
+# TESTS ##############################
+add_test(
+  NAME lexer
+  COMMAND lexer_test
+  WORKING_DIRECTORY "tests/"
 )
