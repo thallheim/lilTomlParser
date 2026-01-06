@@ -1,0 +1,5 @@
+[main]
+the_key = the_val
+[misc]
+akey =aval
+badinput
