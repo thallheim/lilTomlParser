@@ -42,13 +42,19 @@ target_compile_definitions(ltp PRIVATE
   $<$<CONFIG:Release>:NDEBUG>
 )
 
-# TESTS ##############################
-add_test(
-  NAME lexer
-  COMMAND lexer_test
+### TESTS ##############################
+
+# Lexer
+add_test(NAME lex-heading
+  COMMAND lexer_test lex-heading
+  WORKING_DIRECTORY "tests/"
+)
+add_test(NAME lex-comment
+  COMMAND lexer_test lex-comment
   WORKING_DIRECTORY "tests/"
 )
 
+# Utils
 add_test(
   NAME utils
   COMMAND utils_test
