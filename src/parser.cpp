@@ -111,7 +111,7 @@ const PError* Parser::get_last_error() {
   return nullptr;
 }
 
-void Parser::run() {
+std::vector<Token> Parser::run() {
   using tk = TokenKind;
   using ps = PState;
 
@@ -164,6 +164,7 @@ void Parser::run() {
     m_cursor++;
   }
   printf("<CfgParser> Done (%zu errors)\n", m_errors.size());
+  return m_results;
 }
 
 bool Parser::expect(TokenKind k) {

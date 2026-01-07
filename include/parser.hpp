@@ -125,13 +125,13 @@ struct Parser {
     // log_dbg("Parser: %s\n", ps2s(m_state).c_str());
   };
 
-  void          error(PErrorKind k, string msg);
-  const PError* get_last_error();
-  void          run();
-  bool          expect(TokenKind k);
-  Token*        peek();
-  Token&        get_tkn();
-  void          promote_alnum(TokenKind k);
-  PState        next();
-  void          parse_alnum();
+  void                  error(PErrorKind k, string msg);
+  const PError*         get_last_error();
+  std::vector<Token>    run();
+  bool                  expect(TokenKind k);
+  Token*                peek();
+  Token&                get_tkn();
+  void                  promote_alnum(TokenKind k);
+  PState                next();
+  void                  parse_alnum();
 };
