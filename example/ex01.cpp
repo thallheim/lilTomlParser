@@ -4,13 +4,15 @@
 
 int main() {
 
-  string in = slurp_file("test.toml");
+  string in = "[heading1]"
+    "# a comment\n"
+    "thekey = theval\n"
+    "\n";
 
   Lexer L(in);
   Parser P(L);
   P.m_input = L.m_results;
   P.run();
 
-  std::println("Henlo, worldo");
   return 0;
 }

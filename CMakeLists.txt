@@ -28,6 +28,12 @@ target_sources(ltp
     "src/util.cpp"
 )
 
+### EXAMPLES BIN ###########################
+add_executable(example example/ex01.cpp)
+target_link_libraries(example PRIVATE ltp)
+
+
+### OPTIONS ############################
 add_compile_options(
   Wall
   Wextra
@@ -41,6 +47,7 @@ add_compile_options(
 target_compile_definitions(ltp PRIVATE
   $<$<CONFIG:Release>:NDEBUG>
 )
+
 
 ### TESTS ##############################
 

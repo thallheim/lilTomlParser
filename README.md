@@ -9,3 +9,4 @@ Kind of. Doesn't support tables in the slightest, yet.
     * [ ] Added to CMakeLists
     * [ ] CTest
   * [ ] Allow non-static build
+  * [ ] Allow optionally including [isocline](https://github.com/daanx/isocline) for prettyfication
