@@ -160,10 +160,12 @@ std::vector<Token> Parser::run() {
       break;
     }
     }
-
+    m_results.emplace_back();
     m_cursor++;
   }
-  printf("<CfgParser> Done (%zu errors)\n", m_errors.size());
+  printf("<CfgParser> Done (%zu errors) (%zu results)\n",
+         m_errors.size(),m_results.size());
+
   return m_results;
 }
 
