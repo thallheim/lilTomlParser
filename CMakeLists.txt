@@ -67,6 +67,13 @@ add_test(NAME lex-alnum
   WORKING_DIRECTORY "tests/"
 )
 
+# Parser
+add_test(NAME parse-heading
+  COMMAND parser_test parse-heading
+  WORKING_DIRECTORY "tests/"
+)
+
+
 # Utils
 add_test(
   NAME utils

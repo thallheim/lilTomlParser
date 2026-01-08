@@ -44,7 +44,6 @@ int main(int argc, char **argv) {
   if (arg == "lex-heading") return lex_heading();
   if (arg == "lex-comment") return lex_comment();
   if (arg == "lex-alnum")   return lex_alnum();
-  if (arg == "lex-other")   return lex_eol();
 
 
 
