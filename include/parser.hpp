@@ -1,79 +1,18 @@
 #pragma once
 
 #include <print>
-#include "util.hpp"
+
+#include "enums.hpp"
+#include "types.hpp"
 
 // namespace fs     = std::filesystem;
 using     sview  = std::string_view;
 using     string = std::string;
 
 
-enum class TokenKind : uint8_t {
-  Heading,
-  Comment,
-  AlNum,
-  Delim,
-  SettingKey,
-  SettingValue,
-  EOL,
-  Other
-};
-
-struct Token {
-  TokenKind kind;
-  string value;
-
-  const string kind_as_string() const {
-    switch (this->kind) {
-    case TokenKind::Heading:        return "Heading";
-    case TokenKind::Comment:        return "Comment";
-    case TokenKind::AlNum:          return "AlNum";
-    case TokenKind::Delim:          return "Delim";
-    case TokenKind::SettingKey:     return "SettingKey";
-    case TokenKind::SettingValue:   return "SettingValue";
-    case TokenKind::EOL:            return "EOL";
-    case TokenKind::Other:          return "Other";
-    }
-  }
-
-};
-
-enum class PState : uint8_t {
-  ParseHeading,
-  ParseComment,
-  ParseDelim,
-  ParseAlNum,
-  ParseSettingKey,
-  ParseSettingValue,
-  ParseEOL,
-  ParseOther
-};
-
-enum class PEvent : uint8_t {
-  ParseOk = 0, ParseFail, Input,
-};
-
-enum class PErrorKind {
-  ParseError,
-  OutOfRange,
-  UnknownToken,
-};
-
-struct PError {
-  PErrorKind  kind;
-  string      msg;
-
-  PError(PErrorKind kind, string msg) {
-    this->kind = kind;
-    this->msg  = msg;
-  }
-
-};
-
-
-/// Returns parser state as string.
+/// Parser state as const string.
 const string ps2s(PState s);
-/// Returns parser event as string.
+/// Parser event as const string.
 const string pe2s(PEvent e);
 
 

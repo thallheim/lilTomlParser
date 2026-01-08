@@ -20,7 +20,9 @@ target_sources(ltp
     BASE_DIRS "include/"
     FILES
       "include/config.hpp"
+      "include/enums.hpp"
       "include/parser.hpp"
+      "include/types.hpp"
       "include/util.hpp"
   PRIVATE
     "src/config.cpp"
