@@ -4,7 +4,9 @@ Kind of. Doesn't support tables in the slightest, yet.
 
 
 ## todo
-
+  * [ ] Lexing/parsing rewrite
+    * [ ] Lexer
+    * [ ] Parser
   * [x] Build *example01* TU
   * [-] CTest
     * [ ] Parser
