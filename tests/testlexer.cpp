@@ -1,12 +1,11 @@
 #include "../include/parser.hpp"
 #include "../include/config.hpp"
-#include "../include/util.hpp"
+#include "util.hpp"
 
 
 
-
-int parse_heading() {
-  const string heading = "[title]";
+int lex_heading() {
+  const string heading = "[section_heading]";
   Lexer L;
   L.load(heading);
   L.scan();
@@ -15,7 +14,7 @@ int parse_heading() {
   return 1;
 }
 
-int parse_comment() {
+int lex_comment() {
   const string comment = "# one comment, please";
   Lexer L;
   L.load(comment);
@@ -25,29 +24,31 @@ int parse_comment() {
   return 1;
 }
 
-int parse_other() {
-  const string bad = "bad input yo";
+int lex_alnum() {
   Lexer L;
-  L.load(bad);
+  L.load({"h"});
   L.scan();
+  if (L.m_results.back().kind == TokenKind::AlNum) return 0;
 
-  if (L.m_results.back().kind == TokenKind::Other) return 0;
   return 1;
 }
 
 
 int main(int argc, char **argv) {
+  // args tracked to receive test names from CTest, if user runs single test
   string arg;
   if (argc > 1) arg = argv[1];
 
   bool tests_ok = true;
 
-  if (arg == "lex-heading") return parse_heading();
-  if (arg == "lex-comment") return parse_comment();
+  if (arg == "lex-heading") return lex_heading();
+  if (arg == "lex-comment") return lex_comment();
+  if (arg == "lex-alnum")   return lex_alnum();
+  if (arg == "lex-other")   return lex_eol();
 
 
 
-  // if (!tests_ok) return 1;
-
-  return 1; // should never get here, so report failure
+  // should never get here, so report failure before returning
+  // TODO: report failure
+  return 1;
 }

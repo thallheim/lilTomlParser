@@ -62,6 +62,10 @@ add_test(NAME lex-comment
   COMMAND lexer_test lex-comment
   WORKING_DIRECTORY "tests/"
 )
+add_test(NAME lex-alnum
+  COMMAND lexer_test lex-alnum
+  WORKING_DIRECTORY "tests/"
+)
 
 # Utils
 add_test(
