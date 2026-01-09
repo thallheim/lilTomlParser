@@ -72,6 +72,14 @@ add_test(NAME parse-heading
   COMMAND parser_test parse-heading
   WORKING_DIRECTORY "tests/"
 )
+add_test(NAME parse-comment
+  COMMAND parser_test parse-comment
+  WORKING_DIRECTORY "tests/"
+)
+add_test(NAME parse-delim
+  COMMAND parser_test parse-delim
+  WORKING_DIRECTORY "tests/"
+)
 
 
 # Utils

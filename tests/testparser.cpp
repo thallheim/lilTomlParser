@@ -8,10 +8,47 @@ int parse_heading() {
   L.load({"[section]"});
   L.scan();
   Parser P(L);
+  P.m_input = L.m_results;
   P.run();
   if (P.m_results.back().kind == TokenKind::Heading) return 0;
 
-  return 1;
+  return 0;
+}
+
+int parse_comment() {
+  Lexer L;
+  L.load({"# un commento"});
+  L.scan();
+  Parser P(L);
+  P.m_input = L.m_results;
+  P.run();
+  if (P.m_results.back().kind == TokenKind::Comment) return 0;
+
+  return 0;
+}
+
+int parse_delim() {
+  Lexer L;
+  L.load({"="});
+  L.scan();
+  Parser P(L);
+  P.m_input = L.m_results;
+  P.run();
+  if (P.m_results.back().kind == TokenKind::Delim) return 0;
+
+  return 0;
+}
+
+int parse_other() {
+  Lexer L;
+  L.load({"bad"});
+  L.scan();
+  Parser P(L);
+  P.m_input = L.m_results;
+  P.run();
+  if (P.m_results.back().kind == TokenKind::Other) return 0;
+
+  return 0;
 }
 
 
@@ -21,6 +58,9 @@ int main(int argc, char **argv) {
   if (argc > 1) arg = argv[1];
 
   if (arg == "parse-heading") return parse_heading();
+  if (arg == "parse-comment") return parse_comment();
+  if (arg == "parse-delim")   return parse_delim();
+  if (arg == "parse-other")   return parse_other();
 
   // should never get here, so report failure before returning
   // TODO: report failure
