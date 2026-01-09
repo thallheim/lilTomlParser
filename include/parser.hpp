@@ -38,7 +38,7 @@ struct Lexer {
   /// Tokenise the input buffer, dumping results into `m_tokens`.
   void scan2();
   void scan();
-  /// Run the lexer on `m_inbuf`, dumping results into `m_tokens`.
+  /// Return char at current cursor pos. in the input buffer.
   char get_ch();
   /// Returns whether current char is null or newline.
   bool eol();

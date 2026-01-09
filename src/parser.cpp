@@ -16,11 +16,38 @@ void Lexer::scan() {
   using tk = TokenKind;
   m_cursor = 0; // reset cursor
   string buf;   // tkn value
-  Token  t;     // output
+  Token  out;   // output
   char   curr;  // current char
 
   while (m_cursor < m_inbuf.size()) { // scanning loop
     curr = get_ch();
+
+    if (curr == '\n' || curr == '\0') {
+      out.kind = tk::EOL;
+      out.value = curr; // likely pointless, but why not - the field exists
+      m_results.emplace_back(out);
+      m_cursor++;
+      continue;
+    }
+
+    if (std::isspace(curr)) continue; // skip whitespace
+
+    if (curr == '[' || curr == ']' || curr == '=') { // got delim
+      out.kind = tk::Delim;
+      out.value = curr;
+      m_results.emplace_back(out);
+      break;
+    }
+
+    if (is_alnum(curr)) { // got either of [a-Z0-9-_]
+      out.kind = tk::AlNum;
+      out.value = curr;
+      m_results.emplace_back(out);
+      break;
+    }
+
+    buf.clear(); // reset tkn value buffer
+    m_cursor++;
   }
 }
 
