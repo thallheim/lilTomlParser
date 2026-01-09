@@ -36,8 +36,9 @@ struct Lexer {
   /// Load a string into `m_inbuf`.
   void load(const string &str);
   /// Tokenise the input buffer, dumping results into `m_tokens`.
+  void scan2();
   void scan();
-  /// Run the lexer on `m_scanbuf`, dumping results into `m_tokens`.
+  /// Run the lexer on `m_inbuf`, dumping results into `m_tokens`.
   char get_ch();
   /// Returns whether current char is null or newline.
   bool eol();
