@@ -20,6 +20,18 @@ void Lexer::scan() {
   char   curr;  // current char
 
   while (m_cursor < m_inbuf.size()) { // scanning loop
+    curr = get_ch();
+  }
+}
+
+void Lexer::scan2() {
+  using tk = TokenKind;
+  m_cursor = 0; // reset cursor
+  string buf;   // tkn value
+  Token  t;     // output
+  char   curr;  // current char
+
+  while (m_cursor < m_inbuf.size()) { // scanning loop
     if (get_ch() == '\n' || get_ch() == '\0') {
       t.kind = tk::EOL;
       buf = get_ch();
