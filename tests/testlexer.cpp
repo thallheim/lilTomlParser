@@ -19,7 +19,9 @@ bad)";
 
   /* NOTE: Because of shell process forking, the prints below will only show up
      if calling the 'lexer_test' bin directly. They exist mostly because they
-     made writing the rest of the test body easier :) */
+     made writing the rest of the test body faster. Call it directly and pass it
+     'lexer-scan' if you really want to see them without changing anything else.
+  */
   if (L.m_results.size() != 0) {
     for (const auto &c : L.m_results) {
       if (c.kind == tk::EOL) {
@@ -30,7 +32,7 @@ bad)";
       i++;
     }
   }
-
+  // confirm expected results
   if (L.m_results.at(0).kind  == tk::Delim &&
       L.m_results.at(1).kind  == tk::AlNum &&
       L.m_results.at(3).kind  == tk::Delim &&
