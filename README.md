@@ -5,8 +5,8 @@ Kind of. Doesn't support tables in the slightest, yet.
 
 ## todo
   * [-] Lexing/parsing rewrite
-    * [-] Lexer
-      * [ ] Fix comments (shouldn't skip WS inside comments)
+    * [x] Lexer
+      * [ ] Fix comments: shouldn't skip WS inside them
     * [ ] Parser
   * [-] CTest
     * [-] Lexer

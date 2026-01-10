@@ -35,12 +35,12 @@ bad)";
   // confirm expected results
   if (L.m_results.at(0).kind  == tk::Delim &&
       L.m_results.at(1).kind  == tk::AlNum &&
+      L.m_results.at(2).kind  == tk::AlNum &&
       L.m_results.at(3).kind  == tk::Delim &&
       L.m_results.at(4).kind  == tk::EOL &&
       L.m_results.at(5).kind  == tk::AlNum &&
       L.m_results.at(9).kind  == tk::Delim &&
       L.m_results.at(12).kind == tk::AlNum &&
-      L.m_results.at(15).kind == tk::EOL &&
       L.m_results.at(16).kind == tk::Comment &&
       L.m_results.at(28).kind == tk::Other) {
 
@@ -52,13 +52,12 @@ bad)";
 }
 
 int main(int argc, char **argv) {
-  // args tracked to receive test names from CTest, if user runs single test
   string arg;
   if (argc > 1) arg = argv[1];
 
   bool tests_ok = true;
 
-  if (arg == "lexer-scan")   return lexer_scan();
+  if (arg == "lexer-scan") return lexer_scan();
 
 
 
