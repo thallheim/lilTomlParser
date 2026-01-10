@@ -22,20 +22,13 @@ void Lexer::scan() {
     cc = get_ch();
     out.value = cc;
 
-    if (eol()) {
-      out.kind = tk::EOL;
-    } else if (std::isspace(cc)) {
-      m_cursor++;
-      continue;
-    } else if (cc == '[' || cc == ']' || cc == '=') {
-      out.kind = tk::Delim;
-    } else if (cc == '#') { // TODO: don't skip WS inside comments
-      out.kind = tk::Comment;
-    } else if (is_alnum(cc)) {
-      out.kind = tk::AlNum;
-    } else {
-      out.kind = tk::Other;
-    }
+    if (eol()) { out.kind = tk::EOL; }
+    else if (std::isspace(cc)) { m_cursor++; continue; }
+    else if (cc == '[' || cc == ']' || cc == '=') { out.kind = tk::Delim; }
+    // TODO: don't skip WS inside comments
+    else if (cc == '#') { out.kind = tk::Comment; }
+    else if (is_alnum(cc)) { out.kind = tk::AlNum; }
+    else { out.kind = tk::Other; }
 
     m_results.emplace_back(out);
     m_cursor++;
