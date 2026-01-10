@@ -1,18 +1,14 @@
 #include "../include/parser.hpp"
 #include "../include/config.hpp"
+#include "tests.hpp" // for testing string (TEST_STR)
 #include "util.hpp"
 
 using tk = TokenKind;
 
 int lexer_scan() {
-  const string str = R"([s1]
-_yes = no-no
-# un commento
-@
-bad)";
 
   Lexer L;
-  L.load(str);
+  L.load(TEST_STR);
   L.scan();
 
   size_t i = 0;

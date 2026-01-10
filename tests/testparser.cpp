@@ -1,16 +1,17 @@
 #include "../include/parser.hpp"
 #include "../include/config.hpp"
+#include "tests.hpp" // for testing string (TEST_STR)
 #include "util.hpp"
 
 
-int parse_heading() {
+int parser_run() {
   Lexer L;
-  L.load({"[section]"});
+  L.load(TEST_STR);
   L.scan();
   Parser P(L);
   P.m_input = L.m_results;
   P.run();
-  if (P.m_results.back().kind == TokenKind::Heading) return 0;
+  if (P.m_results.at(0).kind == TokenKind::Heading) return 0;
 
   return 0;
 }
@@ -57,7 +58,7 @@ int main(int argc, char **argv) {
   string arg;
   if (argc > 1) arg = argv[1];
 
-  if (arg == "parse-heading") return parse_heading();
+  if (arg == "parse-heading") return parser_run();
   if (arg == "parse-comment") return parse_comment();
   if (arg == "parse-delim")   return parse_delim();
   if (arg == "parse-other")   return parse_other();
