@@ -3,6 +3,7 @@
 #include "tests.hpp" // for testing string (TEST_STR)
 #include "util.hpp"
 
+using tk = TokenKind;
 
 int parser_run() {
   Lexer L;
@@ -11,43 +12,18 @@ int parser_run() {
   Parser P(L);
   P.m_input = L.m_results;
   P.run();
-  if (P.m_results.at(0).kind == TokenKind::Heading) return 0;
+  size_t i;
 
-  return 0;
-}
-
-int parse_comment() {
-  Lexer L;
-  L.load({"# un commento"});
-  L.scan();
-  Parser P(L);
-  P.m_input = L.m_results;
-  P.run();
-  if (P.m_results.back().kind == TokenKind::Comment) return 0;
-
-  return 0;
-}
-
-int parse_delim() {
-  Lexer L;
-  L.load({"="});
-  L.scan();
-  Parser P(L);
-  P.m_input = L.m_results;
-  P.run();
-  if (P.m_results.back().kind == TokenKind::Delim) return 0;
-
-  return 0;
-}
-
-int parse_other() {
-  Lexer L;
-  L.load({"bad"});
-  L.scan();
-  Parser P(L);
-  P.m_input = L.m_results;
-  P.run();
-  if (P.m_results.back().kind == TokenKind::Other) return 0;
+  if (P.m_results.size() != 0) {
+    for (const auto &c : P.m_results) {
+      if (c.kind == tk::EOL) {
+        printf("%zu: Got %s\n", i, c.kind_as_string().c_str());
+      } else {
+        printf("%zu: Got %s %s\n", i, c.kind_as_string().c_str(), c.value.c_str());
+      }
+      i++;
+    }
+  }
 
   return 0;
 }
@@ -58,10 +34,7 @@ int main(int argc, char **argv) {
   string arg;
   if (argc > 1) arg = argv[1];
 
-  if (arg == "parse-heading") return parser_run();
-  if (arg == "parse-comment") return parse_comment();
-  if (arg == "parse-delim")   return parse_delim();
-  if (arg == "parse-other")   return parse_other();
+  if (arg == "parser-run") return parser_run();
 
   // should never get here, so report failure before returning
   // TODO: report failure
