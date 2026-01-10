@@ -26,7 +26,7 @@ struct Lexer {
   std::vector<Token>        m_results;
 
   /// Convenience ctor to load and scan `in`.
-  Lexer(string &in) {
+  Lexer(string in) {
     load(in);
     scan();
   }
@@ -36,7 +36,6 @@ struct Lexer {
   /// Load a string into `m_inbuf`.
   void load(const string &str);
   /// Tokenise the input buffer, dumping results into `m_tokens`.
-  void scan2();
   void scan();
   /// Return char at current cursor pos. in the input buffer.
   char get_ch();

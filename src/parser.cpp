@@ -15,103 +15,34 @@ void Lexer::load(const string &str) {
 void Lexer::scan() {
   using tk = TokenKind;
   m_cursor = 0; // reset cursor
-  string buf;   // tkn value
-  Token  out;   // output
-  char   curr;  // current char
+  Token  out;   // output 'buffer' obj.
+  char   cc;    // current char
 
   while (m_cursor < m_inbuf.size()) { // scanning loop
-    curr = get_ch();
+    cc = get_ch();
+    out.value = cc;
 
-    if (curr == '\n' || curr == '\0') {
+    if (eol()) {
       out.kind = tk::EOL;
-      out.value = curr; // likely pointless, but why not - the field exists
-      m_results.emplace_back(out);
+    } else if (std::isspace(cc)) {
       m_cursor++;
       continue;
-    }
-
-    if (std::isspace(curr)) continue; // skip whitespace
-
-    if (curr == '[' || curr == ']' || curr == '=') { // got delim
+    } else if (cc == '[' || cc == ']' || cc == '=') {
       out.kind = tk::Delim;
-      out.value = curr;
-      m_results.emplace_back(out);
-      break;
-    }
-
-    if (is_alnum(curr)) { // got either of [a-Z0-9-_]
+    } else if (cc == '#') { // TODO: don't skip WS inside comments
+      out.kind = tk::Comment;
+    } else if (is_alnum(cc)) {
       out.kind = tk::AlNum;
-      out.value = curr;
-      m_results.emplace_back(out);
-      break;
+    } else {
+      out.kind = tk::Other;
     }
 
-    buf.clear(); // reset tkn value buffer
+    m_results.emplace_back(out);
     m_cursor++;
   }
 }
 
-void Lexer::scan2() {
-  using tk = TokenKind;
-  m_cursor = 0; // reset cursor
-  string buf;   // tkn value
-  Token  t;     // output
-  char   curr;  // current char
-
-  while (m_cursor < m_inbuf.size()) { // scanning loop
-    if (get_ch() == '\n' || get_ch() == '\0') {
-      t.kind = tk::EOL;
-      buf = get_ch();
-      m_results.emplace_back(t);
-      buf.clear();
-      m_cursor++;
-      continue;
-    }
-
-    while (get_ch() == ' ') { m_cursor++; }
-    curr = get_ch();
-
-    if (curr == '[') {
-      t.kind = tk::Heading;
-      m_cursor++;
-      while (is_alnum(m_inbuf[m_cursor])) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash heading value
-    } else if (curr == ']') {
-      m_cursor++;
-      continue;
-    } else if (curr == '=') {
-      t.kind = tk::Delim;
-      t.value = '=';
-      m_cursor++;
-    } else if (is_alnum(curr)) {
-      t.kind = tk::AlNum;
-      while (isalnum(get_ch()) && !std::isspace(get_ch())) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash alnum value
-    } else if (curr == '#') {
-      t.kind = tk::Comment;
-      while (!eol()) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash comment value
-    } else {
-      t.kind = tk::Other;
-      while (!eol()) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash unknown token value
-
-    }
-
-    m_results.emplace_back(t);
-    buf.clear();
-  } // /scan loop
-}
-
-char Lexer::get_ch() {
+inline char Lexer::get_ch() {
   if (m_cursor > m_inbuf.size())
     return '\0';
   return m_inbuf[m_cursor];

@@ -54,18 +54,11 @@ target_compile_definitions(ltp PRIVATE
 ### TESTS ##############################
 
 # Lexer
-add_test(NAME lex-heading
-  COMMAND lexer_test lex-heading
+add_test(NAME lexer-scan
+  COMMAND lexer_test lexer-scan
   WORKING_DIRECTORY "tests/"
 )
-add_test(NAME lex-comment
-  COMMAND lexer_test lex-comment
-  WORKING_DIRECTORY "tests/"
-)
-add_test(NAME lex-alnum
-  COMMAND lexer_test lex-alnum
-  WORKING_DIRECTORY "tests/"
-)
+
 
 # Parser
 add_test(NAME parse-heading
