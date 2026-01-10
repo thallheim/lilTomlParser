@@ -74,7 +74,18 @@ const PError* Parser::get_last_error() {
   return nullptr;
 }
 
-std::vector<Token> Parser::run() {
+void Parser::run() {
+  using tk = TokenKind;
+  using ps = PState;
+
+  string section = "@default@";
+
+  for (auto &t : m_lexer.m_results) {
+    // how best to handle insertion into parser's results vec?
+  }
+}
+
+std::vector<Token> Parser::_run() {
   using tk = TokenKind;
   using ps = PState;
 

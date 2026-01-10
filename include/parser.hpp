@@ -1,6 +1,7 @@
 #pragma once
 
 #include <print>
+#include <map>
 
 #include "enums.hpp"
 #include "types.hpp"
@@ -8,6 +9,7 @@
 // namespace fs     = std::filesystem;
 using     sview  = std::string_view;
 using     string = std::string;
+using     tk     = TokenKind;
 
 
 /// Parser state as const string.
@@ -51,22 +53,31 @@ struct Lexer {
 // Parser
 // ----------------------------------------------------------------------
 struct Parser {
-  Lexer                 &m_lexer;
-  PState                m_prev_state;
-  PState                m_state;
-  std::vector<PError>   m_errors;
-  std::vector<Token>    m_input;
-  size_t                m_cursor = 0;
-  std::vector<Token>    m_results;
+  Lexer                                 &m_lexer;
+  PState                                m_prev_state;
+  PState                                m_state;
+  static std::map<TokenKind, PState>    m_state_map;
+  std::vector<PError>                   m_errors;
+  std::vector<Token>                    m_input;
+  size_t                                m_cursor = 0;
+  std::vector<Token>                    m_results;
 
-  Parser(Lexer &lexer)
-    : m_lexer(lexer) {
-    // log_dbg("Parser: %s\n", ps2s(m_state).c_str());
+  Parser(Lexer &lexer) : m_lexer(lexer) {
+    // Populate state map
+    m_state_map.emplace(tk::AlNum,        PState::ParseAlNum);
+    m_state_map.emplace(tk::Comment,      PState::ParseComment);
+    m_state_map.emplace(tk::Delim,        PState::ParseDelim);
+    m_state_map.emplace(tk::EOL,          PState::ParseEOL);
+    m_state_map.emplace(tk::Heading,      PState::ParseHeading);
+    m_state_map.emplace(tk::SettingKey,   PState::ParseSettingKey);
+    m_state_map.emplace(tk::SettingValue, PState::ParseSettingValue);
+    m_state_map.emplace(tk::Other,        PState::ParseOther);
   };
 
   void                  error(PErrorKind k, string msg);
   const PError*         get_last_error();
-  std::vector<Token>    run();
+  void                  run();
+  std::vector<Token>    _run();
   bool                  expect(TokenKind k);
   Token*                peek();
   Token&                get_tkn();
