@@ -15,76 +15,34 @@ void Lexer::load(const string &str) {
 void Lexer::scan() {
   using tk = TokenKind;
   m_cursor = 0; // reset cursor
-  string buf;   // tkn value
-  Token  t;     // output
-  char   curr;  // current char
+  Token  out;   // output 'buffer' obj.
+  char   cc;    // current char
 
   while (m_cursor < m_inbuf.size()) { // scanning loop
-    curr = get_ch();
+    cc = get_ch();
+    out.value = cc;
+
+    if (eol()) {
+      out.kind = tk::EOL;
+    } else if (std::isspace(cc)) {
+      m_cursor++;
+      continue;
+    } else if (cc == '[' || cc == ']' || cc == '=') {
+      out.kind = tk::Delim;
+    } else if (cc == '#') { // TODO: don't skip WS inside comments
+      out.kind = tk::Comment;
+    } else if (is_alnum(cc)) {
+      out.kind = tk::AlNum;
+    } else {
+      out.kind = tk::Other;
+    }
+
+    m_results.emplace_back(out);
+    m_cursor++;
   }
 }
 
-void Lexer::scan2() {
-  using tk = TokenKind;
-  m_cursor = 0; // reset cursor
-  string buf;   // tkn value
-  Token  t;     // output
-  char   curr;  // current char
-
-  while (m_cursor < m_inbuf.size()) { // scanning loop
-    if (get_ch() == '\n' || get_ch() == '\0') {
-      t.kind = tk::EOL;
-      buf = get_ch();
-      m_results.emplace_back(t);
-      buf.clear();
-      m_cursor++;
-      continue;
-    }
-
-    while (get_ch() == ' ') { m_cursor++; }
-    curr = get_ch();
-
-    if (curr == '[') {
-      t.kind = tk::Heading;
-      m_cursor++;
-      while (is_alnum(m_inbuf[m_cursor])) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash heading value
-    } else if (curr == ']') {
-      m_cursor++;
-      continue;
-    } else if (curr == '=') {
-      t.kind = tk::Delim;
-      t.value = '=';
-      m_cursor++;
-    } else if (is_alnum(curr)) {
-      t.kind = tk::AlNum;
-      while (isalnum(get_ch()) && !std::isspace(get_ch())) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash alnum value
-    } else if (curr == '#') {
-      t.kind = tk::Comment;
-      while (!eol()) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash comment value
-    } else {
-      t.kind = tk::Other;
-      while (!eol()) {
-        buf += m_inbuf[m_cursor++];
-      }
-      t.value = buf; // stash unknown token value
-
-    }
-
-    m_results.emplace_back(t);
-    buf.clear();
-  } // /scan loop
-}
-
-char Lexer::get_ch() {
+inline char Lexer::get_ch() {
   if (m_cursor > m_inbuf.size())
     return '\0';
   return m_inbuf[m_cursor];

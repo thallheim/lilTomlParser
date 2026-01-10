@@ -2,37 +2,52 @@
 #include "../include/config.hpp"
 #include "util.hpp"
 
+using tk = TokenKind;
 
+int lexer_scan() {
+  const string str = R"([s1]
+_yes = no-no
+# un commento
+@
+bad)";
 
-int lex_heading() {
-  const string heading = "[section_heading]";
   Lexer L;
-  L.load(heading);
+  L.load(str);
   L.scan();
 
-  if (L.m_results.back().kind == TokenKind::Heading) return 0;
+  size_t i = 0;
+
+  /* NOTE: Because of shell process forking, the prints below will only show up
+     if calling the 'lexer_test' bin directly. They exist mostly because they
+     made writing the rest of the test body easier :) */
+  if (L.m_results.size() != 0) {
+    for (const auto &c : L.m_results) {
+      if (c.kind == tk::EOL) {
+        printf("%zu: Got %s\n", i, c.kind_as_string().c_str());
+      } else {
+        printf("%zu: Got %s %s\n", i, c.kind_as_string().c_str(), c.value.c_str());
+      }
+      i++;
+    }
+  }
+
+  if (L.m_results.at(0).kind  == tk::Delim &&
+      L.m_results.at(1).kind  == tk::AlNum &&
+      L.m_results.at(3).kind  == tk::Delim &&
+      L.m_results.at(4).kind  == tk::EOL &&
+      L.m_results.at(5).kind  == tk::AlNum &&
+      L.m_results.at(9).kind  == tk::Delim &&
+      L.m_results.at(12).kind == tk::AlNum &&
+      L.m_results.at(15).kind == tk::EOL &&
+      L.m_results.at(16).kind == tk::Comment &&
+      L.m_results.at(28).kind == tk::Other) {
+
+    return 0;
+  }
+
+  std::print(stderr, "TEST FAIL: lexer_scan: Results don't match expected output\n");
   return 1;
 }
-
-int lex_comment() {
-  const string comment = "# one comment, please";
-  Lexer L;
-  L.load(comment);
-  L.scan();
-
-  if (L.m_results.back().kind == TokenKind::Comment) return 0;
-  return 1;
-}
-
-int lex_alnum() {
-  Lexer L;
-  L.load({"h"});
-  L.scan();
-  if (L.m_results.back().kind == TokenKind::AlNum) return 0;
-
-  return 1;
-}
-
 
 int main(int argc, char **argv) {
   // args tracked to receive test names from CTest, if user runs single test
@@ -41,9 +56,7 @@ int main(int argc, char **argv) {
 
   bool tests_ok = true;
 
-  if (arg == "lex-heading") return lex_heading();
-  if (arg == "lex-comment") return lex_comment();
-  if (arg == "lex-alnum")   return lex_alnum();
+  if (arg == "lexer-scan")   return lexer_scan();
 
 
 

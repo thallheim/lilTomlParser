@@ -47,10 +47,15 @@ alias reconf-make := reconfigure-make
     cmake -B build -S . --fresh
 
 
-alias ta := test-all
+alias ta := test-all-debug
 [group("Unit tests"), doc("Run all unit tests")]
-@test-all:
-    ctest --test-dir build/ --output-on-failure
+@test-all-debug:
+    ctest --test-dir build/ --output-on-failure -C "Debug"
+
+alias tar := test-all-release
+[group("Unit tests"), doc("Run all unit tests")]
+@test-all-release:
+    ctest --test-dir build/ --output-on-failure -C "Release"
 
 alias lt := list-tests
 [group("Unit tests"), doc("List available tests")]
