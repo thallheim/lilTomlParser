@@ -4,13 +4,17 @@ Kind of. Doesn't support tables in the slightest, yet.
 
 
 ## todo
-  * [-] Lexing/parsing rewrite
+  * [ ] Lexing/parsing rewrite
     * [x] Lexer
       * [ ] Fix comments: shouldn't skip WS inside them
+      * [x] test
     * [ ] Parser
+      * [ ] populate `m_input`
+      * [ ] parsing loop
+      * [ ] test
   * [-] CTest
-    * [-] Lexer
-    * [ ] Parser
+    * [x] Lexer _(min)_
+    * [ ] Parser _(started)_
     * [ ] Utils
     * [ ] `Config` handling
   * [ ] Allow non-static build
