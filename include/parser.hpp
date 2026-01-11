@@ -56,7 +56,7 @@ struct Parser {
   Lexer                                 &m_lexer;
   PState                                m_prev_state;
   PState                                m_state;
-  static std::map<TokenKind, PState>    m_state_map;
+  std::map<TokenKind, PState>           m_state_map;
   std::vector<PError>                   m_errors;
   std::vector<Token>                    m_input;
   size_t                                m_cursor = 0;

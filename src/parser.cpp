@@ -81,6 +81,7 @@ void Parser::run() {
   string section = "@default@";
 
   for (auto &t : m_lexer.m_results) {
+    m_input.emplace_back(Token(t.kind, t.value)); // populate input vec
     // how best to handle insertion into parser's results vec?
   }
 }

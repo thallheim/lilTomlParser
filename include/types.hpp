@@ -27,6 +27,12 @@ struct Token {
     }
   }
 
+  Token() {};
+  Token(TokenKind k, string v) {
+    this->kind = k;
+    this->value = v;
+  }
+
 };
 
 struct PError {

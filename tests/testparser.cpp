@@ -10,12 +10,11 @@ int parser_run() {
   L.load(TEST_STR);
   L.scan();
   Parser P(L);
-  P.m_input = L.m_results;
   P.run();
   size_t i;
 
-  if (P.m_results.size() != 0) {
-    for (const auto &c : P.m_results) {
+  if (P.m_input.size() != 0) {
+    for (const auto &c : P.m_input) {
       if (c.kind == tk::EOL) {
         printf("%zu: Got %s\n", i, c.kind_as_string().c_str());
       } else {
