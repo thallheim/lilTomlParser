@@ -63,6 +63,11 @@ alias lt := list-tests
     ctest --test-dir build/ -N
 
 alias t := test
-[group("Unit tests"), doc("Run specific unit test")]
+[group("Unit tests"), doc("Run specific unit test (Debug conf.)")]
 @test ARG:
-    ctest --test-dir build/ --output-on-failure -R {{ARG}}
+    ctest --test-dir build/ --output-on-failure -C "Debug" -R {{ARG}}
+
+alias tr := test-release
+[group("Unit tests"), doc("Run specific unit test (Release conf.)")]
+@test ARG:
+    ctest --test-dir build/ --output-on-failure -C "Release" -R {{ARG}}
