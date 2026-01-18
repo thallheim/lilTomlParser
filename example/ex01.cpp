@@ -11,8 +11,9 @@ int main() {
 
   Lexer L(in);
   Parser P(&L);
-  P.m_input = L.m_results;
   P.run();
+
+  std::print("Parser inputs: {}\n", P.m_input.size());
 
   return 0;
 }

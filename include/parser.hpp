@@ -72,6 +72,13 @@ struct Parser {
     m_state_map.emplace(tk::SettingKey,   PState::ParseSettingKey);
     m_state_map.emplace(tk::SettingValue, PState::ParseSettingValue);
     m_state_map.emplace(tk::Other,        PState::ParseOther);
+    if (lexer == nullptr) {
+      // TODO: add error kind: 'fatal' or something
+      error(PErrorKind::ParseError, "Lexer ptr is null");
+      std::print(stderr, "ERROR: Lexer ptr is null\n");
+    } else {
+      m_input = m_lexer->m_results;
+    }
   };
 
   void                  error(PErrorKind k, string msg);
