@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "../include/parser.hpp"
 #include "../include/util.hpp"
+#include "enums.hpp"
 
 
 // ----------------------------------------------------------------------
@@ -75,19 +76,21 @@ const PError* Parser::get_last_error() {
 }
 
 void Parser::run() {
-  if (m_lexer == nullptr) {
-    std::print(stderr, "\n");
-  }
-
   using tk = TokenKind;
   using ps = PState;
-
   string section = "@default@";
 
-  for (auto &t : m_lexer->m_results) {
-    m_input.emplace_back(Token(t.kind, t.value)); // populate input vec
-    // how best to handle insertion into parser's results vec?
+  if (!m_input.empty()) {
+    for (auto &t : m_input) { // parsing loop
+
+    }
+
+  } else { // empty input
+    // TODO:
+    error(PErrorKind::ParseError, "Input empty");
+    std::print(stderr, "ERROR: Input empty\n");
   }
+
 }
 
 bool Parser::expect(TokenKind k) {

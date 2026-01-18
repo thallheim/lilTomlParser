@@ -4,11 +4,36 @@
 
 #include "util.hpp"
 #include "enums.hpp"
-#include "types.hpp"
+
 
 // namespace fs     = std::filesystem;
 using     sview  = std::string_view;
 using     string = std::string;
+
+struct Setting {
+  string key;
+  string val;
+
+  Setting(sview key, sview val) {
+    key = key;
+    val = val;
+  }
+
+};
+
+struct Config {
+  fs::path              m_config_fpath;
+  fs::path              m_dirpath_home;
+  fs::path              m_dirpath_conf;
+  std::vector<Setting>  m_settings;
+
+  Config FromParseResult();
+
+  void AddSetting(sview key, sview val) {
+    m_settings.emplace_back(Setting(key, val));
+  }
+};
+
 
 struct Token {
   TokenKind kind;
