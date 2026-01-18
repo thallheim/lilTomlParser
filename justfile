@@ -69,5 +69,11 @@ alias t := test
 
 alias tr := test-release
 [group("Unit tests"), doc("Run specific unit test (Release conf.)")]
-@test ARG:
+@test-release ARG:
     ctest --test-dir build/ --output-on-failure -C "Release" -R {{ARG}}
+
+
+alias dp := dev-parser
+[group("Dev"), doc("Run parser test binary directly (debug conf.)")]
+@dev-parser:
+    ./build/tests/Debug/parser_test parser-run
