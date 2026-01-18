@@ -7,7 +7,7 @@ using tk = TokenKind;
 
 int parser_run() {
   Lexer L(TEST_STR);
-  Parser P(L);
+  Parser P(&L);
   P.run();
   size_t i = 0;
 

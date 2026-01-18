@@ -75,73 +75,19 @@ const PError* Parser::get_last_error() {
 }
 
 void Parser::run() {
+  if (m_lexer == nullptr) {
+    std::print(stderr, "\n");
+  }
+
   using tk = TokenKind;
   using ps = PState;
 
   string section = "@default@";
 
-  for (auto &t : m_lexer.m_results) {
+  for (auto &t : m_lexer->m_results) {
     m_input.emplace_back(Token(t.kind, t.value)); // populate input vec
     // how best to handle insertion into parser's results vec?
   }
-}
-
-std::vector<Token> Parser::_run() {
-  using tk = TokenKind;
-  using ps = PState;
-
-  string    section;
-
-  printf("<CfgParser> [b]%zu[/] tokens to parse\n", m_input.size());
-
-  // Main parsing loop
-  while (m_cursor < m_input.size()) {
-
-    m_prev_state = m_state;
-
-    switch (get_tkn().kind) {
-    case tk::Heading: {
-      section = get_tkn().value;
-      m_state = PState::ParseHeading;
-      printf("<CfgParser> Got section: '%s'\n", get_tkn().value.c_str());
-      break;
-    }
-    case tk::Comment: {
-      m_state = ps::ParseComment;
-      printf("<CfgParser> Got comment: '%s'\n", get_tkn().value.c_str());
-      break;
-    }
-    case tk::AlNum: {
-      m_state = ps::ParseAlNum;
-      parse_alnum();
-      break;
-    }
-    case tk::Delim:        { m_state = ps::ParseDelim;                break; }
-    case tk::SettingKey:   { m_state = ps::ParseSettingKey;           break; }
-    case tk::SettingValue: { m_state = ps::ParseSettingValue;         break; }
-    case tk::EOL: {
-      printf("<CfgParser> Got EOL\n");
-      m_state = ps::ParseEOL;
-      if (m_prev_state == ps::ParseSettingKey) {
-        m_input[m_cursor-1].kind = tk::Other; // "downgrade" prev. token
-      }
-
-      break;
-    }
-    case tk::Other: {
-      m_state = ps::ParseOther;
-      printf("<CfgParser> Got unknown token: '%s'\n", get_tkn().value.c_str());
-      // TODO: reg. & log parse error: unknown tkn
-      break;
-    }
-    }
-    m_results.emplace_back();
-    m_cursor++;
-  }
-  printf("<CfgParser> Done (%zu errors) (%zu results)\n",
-         m_errors.size(),m_results.size());
-
-  return m_results;
 }
 
 bool Parser::expect(TokenKind k) {
@@ -153,7 +99,7 @@ bool Parser::expect(TokenKind k) {
 Token* Parser::peek() {
   if (m_cursor+1 <= m_input.size()) return &m_input[m_cursor+1];
   const string emsg = "<CfgParser> Tried to peek past end of input\n";
-  printf("%s", emsg.c_str());
+  std::print("{}\n", emsg);
   error(PErrorKind::OutOfRange, emsg);
   throw std::out_of_range("Cant peek past end of input");
 }

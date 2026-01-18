@@ -10,7 +10,7 @@ int main() {
     "\n";
 
   Lexer L(in);
-  Parser P(L);
+  Parser P(&L);
   P.m_input = L.m_results;
   P.run();
 

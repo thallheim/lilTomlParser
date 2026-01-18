@@ -53,7 +53,7 @@ struct Lexer {
 // Parser
 // ----------------------------------------------------------------------
 struct Parser {
-  Lexer                                 &m_lexer;
+  Lexer                                 *m_lexer;
   PState                                m_prev_state;
   PState                                m_state;
   std::map<TokenKind, PState>           m_state_map;
@@ -62,7 +62,7 @@ struct Parser {
   size_t                                m_cursor = 0;
   std::vector<Token>                    m_results;
 
-  Parser(Lexer &lexer) : m_lexer(lexer) {
+  Parser(Lexer *lexer) : m_lexer(lexer) {
     // Populate state map
     m_state_map.emplace(tk::AlNum,        PState::ParseAlNum);
     m_state_map.emplace(tk::Comment,      PState::ParseComment);
@@ -77,7 +77,6 @@ struct Parser {
   void                  error(PErrorKind k, string msg);
   const PError*         get_last_error();
   void                  run();
-  std::vector<Token>    _run();
   bool                  expect(TokenKind k);
   Token*                peek();
   Token&                get_tkn();
