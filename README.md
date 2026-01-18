@@ -9,8 +9,9 @@ Kind of. Doesn't support tables in the slightest, yet.
       * [ ] Fix comments: shouldn't skip WS inside them
       * [x] test
     * [ ] Parser
-      * [ ] populate `m_input`
-      * [ ] parsing loop
+      * [x] populate `m_input`
+      * [ ] parsing loop _(started)_
+        * [ ] return type strat(s)?
       * [ ] test
   * [-] CTest
     * [x] Lexer _(min)_
