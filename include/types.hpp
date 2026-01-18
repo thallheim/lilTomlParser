@@ -1,6 +1,7 @@
 #pragma once
 
 #include <print>
+#include <map>
 
 #include "util.hpp"
 #include "enums.hpp"
@@ -22,16 +23,20 @@ struct Setting {
 };
 
 struct Config {
-  fs::path              m_config_fpath;
-  fs::path              m_dirpath_home;
-  fs::path              m_dirpath_conf;
-  std::vector<Setting>  m_settings;
+  fs::path                      m_config_fpath;
+  fs::path                      m_dirpath_home;
+  fs::path                      m_dirpath_conf;
+  std::vector<string>           m_sections;
+  std::map<string, Setting*>    m_sections_map;
+  std::vector<Setting>          m_settings;
 
   Config FromParseResult();
 
-  void AddSetting(sview key, sview val) {
+  void RegisterSetting(sview section, sview key, sview val) {
     m_settings.emplace_back(Setting(key, val));
+    m_sections_map.emplace(section, &m_settings.back());
   }
+
 };
 
 

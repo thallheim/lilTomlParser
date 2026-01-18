@@ -55,12 +55,13 @@ struct Lexer {
 struct Parser {
   Lexer                                 *m_lexer;
   PState                                m_prev_state;
-  PState                                m_state;
+  PState                                m_state = PState::Idle;
   std::map<TokenKind, PState>           m_state_map;
   std::vector<PError>                   m_errors;
   std::vector<Token>                    m_input;
   size_t                                m_cursor = 0;
   std::vector<Token>                    m_results;
+  Config                                m_result;
 
   Parser(Lexer *lexer) : m_lexer(lexer) {
     // Populate state map

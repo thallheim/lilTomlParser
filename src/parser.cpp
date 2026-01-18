@@ -127,6 +127,7 @@ void Parser::promote_alnum(TokenKind new_kind) {
 
 PState Parser::next() {
   switch (m_state) {
+  case PState::Idle:
   case PState::ParseHeading:
   case PState::ParseComment:
   case PState::ParseDelim:
@@ -207,6 +208,6 @@ const string pe2s(PEvent e) {
   switch (e) {
   case pe::ParseOk:             return "ParseOk";
   case pe::ParseFail:           return "ParseFail";
-  case pe::Input:               return "Input received";
+  case pe::NewInput:               return "Input received";
   }
 }
