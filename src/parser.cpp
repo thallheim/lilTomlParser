@@ -81,10 +81,7 @@ void Parser::run() {
   string section = "@default@";
 
   if (!m_input.empty()) {
-    for (auto &t : m_input) { // parsing loop
-
-    }
-
+    parsing_loop();
   } else { // empty input
     // TODO:
     error(PErrorKind::ParseError, "Input empty");
@@ -162,6 +159,29 @@ void Parser::parse_alnum() {
   else {
     m_input[m_cursor].kind = tk::Other;
     printf("[red]<CfgParser> Unknown token:\t%s[/]\n", get_tkn().value.c_str());
+  }
+}
+
+void Parser::parsing_loop() {
+  using ps = PState;
+  using tk = TokenKind;
+  m_cursor = 0; // reset cursor
+
+  for (auto &t : m_input) {
+    m_prev_state = m_state;
+    m_state = m_state_map[t.kind];
+
+    switch (m_state) {
+    case PState::ParseHeading:
+    case PState::ParseComment:
+    case PState::ParseDelim:
+    case PState::ParseAlNum:
+    case PState::ParseSettingKey:
+    case PState::ParseSettingValue:
+    case PState::ParseEOL:
+    case PState::ParseOther:
+      break;
+    }
   }
 }
 
