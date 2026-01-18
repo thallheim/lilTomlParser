@@ -30,9 +30,11 @@ struct Config {
   std::map<string, Setting*>    m_sections_map;
   std::vector<Setting>          m_settings;
 
-  Config FromParseResult();
+  void AddSection(sview section_name) {
+    m_sections.emplace_back(section_name);
+  }
 
-  void RegisterSetting(sview section, sview key, sview val) {
+  void AddSetting(sview section, sview key, sview val) {
     m_settings.emplace_back(Setting(key, val));
     m_sections_map.emplace(section, &m_settings.back());
   }

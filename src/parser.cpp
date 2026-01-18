@@ -173,6 +173,7 @@ void Parser::parsing_loop() {
     m_state = m_state_map[t.kind];
 
     switch (m_state) {
+    case PState::Idle:
     case PState::ParseHeading:
     case PState::ParseComment:
     case PState::ParseDelim:
