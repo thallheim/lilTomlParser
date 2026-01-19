@@ -14,6 +14,9 @@ Kind of. Doesn't support tables in the slightest, yet.
         * [ ] return type strat(s)?
       * [ ] test
   * [ ] Separate lexer from parser
+  * [ ] Make current custom types an optional default implementation
+    * [ ] Genericise parser return somehow
+        - _maybe tuple, maybe pair?_
   * [-] CTest
     * [x] Lexer _(min)_
     * [ ] Parser _(started)_
