@@ -55,7 +55,7 @@ struct Lexer {
 struct Parser {
   Lexer                                 *m_lexer;
   PState                                m_prev_state;
-  PState                                m_state = PState::Idle;
+  PState                                m_state;
   std::map<TokenKind, PState>           m_state_map;
   std::vector<PError>                   m_errors;
   std::vector<Token>                    m_input;
@@ -64,6 +64,9 @@ struct Parser {
   Config                                m_result;
 
   Parser(Lexer *lexer) : m_lexer(lexer) {
+    // set idle to start
+    m_state = PState::Idle;
+
     // Populate state map
     m_state_map.emplace(tk::AlNum,        PState::ParseAlNum);
     m_state_map.emplace(tk::Comment,      PState::ParseComment);
@@ -73,11 +76,13 @@ struct Parser {
     m_state_map.emplace(tk::SettingKey,   PState::ParseSettingKey);
     m_state_map.emplace(tk::SettingValue, PState::ParseSettingValue);
     m_state_map.emplace(tk::Other,        PState::ParseOther);
-    if (lexer == nullptr) {
-      // TODO: add error kind: 'fatal' or something
+
+    if (lexer == nullptr) { // no lexer == no good
+      // TODO: add error kind 'fatal' or some such?
       error(PErrorKind::ParseError, "Lexer ptr is null");
       std::print(stderr, "ERROR: Lexer ptr is null\n");
     } else {
+      // TODO: check to make sure lexer isn't empty?
       m_input = m_lexer->m_results;
     }
   };

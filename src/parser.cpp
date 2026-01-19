@@ -84,8 +84,9 @@ void Parser::run() {
     parsing_loop();
   } else { // empty input
     // TODO:
-    error(PErrorKind::ParseError, "Input empty");
-    std::print(stderr, "ERROR: Input empty\n");
+    const string emsg = "<CfgParser> Input empty";
+    error(PErrorKind::ParseError, emsg);
+    std::print(stderr, "ERROR: {}", emsg);
   }
 
 }
@@ -101,7 +102,7 @@ Token* Parser::peek() {
   const string emsg = "<CfgParser> Tried to peek past end of input\n";
   std::print("{}\n", emsg);
   error(PErrorKind::OutOfRange, emsg);
-  throw std::out_of_range("Cant peek past end of input");
+  throw std::out_of_range("Can't peek past end of input");
 }
 
 // TODO: don't throw
