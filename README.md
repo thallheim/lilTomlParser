@@ -13,6 +13,7 @@ Kind of. Doesn't support tables in the slightest, yet.
       * [ ] parsing loop _(started)_
         * [ ] return type strat(s)?
       * [ ] test
+  * [ ] Separate lexer from parser
   * [-] CTest
     * [x] Lexer _(min)_
     * [ ] Parser _(started)_
