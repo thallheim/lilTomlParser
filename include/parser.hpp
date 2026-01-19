@@ -2,15 +2,18 @@
 
 #include <print>
 #include <map>
+#include <utility>
+#include <vector>
 
 #include "enums.hpp"
 #include "types.hpp"
 
-// namespace fs     = std::filesystem;
-using     sview  = std::string_view;
-using     string = std::string;
-using     tk     = TokenKind;
-
+using sview  = std::string_view;
+using tk     = TokenKind;
+using std::string;
+using std::map;
+using std::pair;
+using std::vector;
 
 /// Parser state as const string.
 const string ps2s(PState s);
@@ -53,15 +56,14 @@ struct Lexer {
 // Parser
 // ----------------------------------------------------------------------
 struct Parser {
-  Lexer                                 *m_lexer;
-  PState                                m_prev_state;
-  PState                                m_state;
-  std::map<TokenKind, PState>           m_state_map;
-  std::vector<PError>                   m_errors;
-  std::vector<Token>                    m_input;
-  size_t                                m_cursor = 0;
-  std::vector<Token>                    m_results;
-  Config                                m_result;
+  Lexer                        *m_lexer;
+  PState                       m_prev_state;
+  PState                       m_state;
+  map<TokenKind, PState>       m_state_map;
+  vector<PError>               m_errors;
+  vector<Token>                m_input;
+  size_t                       m_cursor = 0;
+  vector<pair<string, string>> m_results;
 
   Parser(Lexer *lexer) : m_lexer(lexer) {
     // set idle to start
