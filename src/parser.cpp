@@ -24,12 +24,16 @@ void Parser::run() {
   using ps = PState;
   // string section = "@default@";
 
-  if (!m_input.empty()) { parsing_loop(); } // all's well - parse away
-  else {                                    // empty input
+  if (!m_input.empty()) { // all's well - parse away
+    parsing_loop();
+  }
+  else { // empty input
     const string emsg = "<CfgParser> Input empty";
     error(PErrorKind::ParseError, emsg);
     std::print(stderr, "ERROR: {}", emsg);
+    return;
   }
+
 
 }
 
@@ -140,15 +144,8 @@ void Parser::parsing_loop() {
     m_state = m_state_map[t.kind];
 
     switch (m_state) {
-    case PState::Idle:
     case PState::ParseHeading:
       _push_section(t.value);
-      break;
-    case PState::ParseComment:
-      break;
-    case PState::ParseDelim:
-      break;
-    case PState::ParseAlNum:
       break;
     case PState::ParseSettingKey:
       _push_key(t.value);
@@ -156,10 +153,10 @@ void Parser::parsing_loop() {
     case PState::ParseSettingValue:
       _push_val(t.value);
       break;
-    case PState::ParseEOL:
-      break;
     case PState::ParseOther:
       // TODO: create & handle error
+      break;
+    default:
       break;
     }
   }

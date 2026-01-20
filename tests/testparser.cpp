@@ -22,6 +22,10 @@ int parser_run() {
     }
   }
 
+  std::print("<CfgParser> Results:\tSections: {}\tKVPs: {}\n",
+             P.m_sections.size(),
+             P.m_kvps.size());
+
   return 0;
 }
 
