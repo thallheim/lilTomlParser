@@ -164,6 +164,30 @@ void Parser::parse_alnum() {
   }
 }
 
+void Parser::_init(Lexer *lexer) {
+  // set idle to start
+  m_state = PState::Idle;
+
+  // Populate state map
+  m_state_map.emplace(tk::AlNum,        PState::ParseAlNum);
+  m_state_map.emplace(tk::Comment,      PState::ParseComment);
+  m_state_map.emplace(tk::Delim,        PState::ParseDelim);
+  m_state_map.emplace(tk::EOL,          PState::ParseEOL);
+  m_state_map.emplace(tk::Heading,      PState::ParseHeading);
+  m_state_map.emplace(tk::SettingKey,   PState::ParseSettingKey);
+  m_state_map.emplace(tk::SettingValue, PState::ParseSettingValue);
+  m_state_map.emplace(tk::Other,        PState::ParseOther);
+
+  if (lexer == nullptr) { // no lexer == no good
+    // TODO: add error kind 'fatal' or some such?
+    error(PErrorKind::ParseError, "Lexer ptr is null");
+    std::print(stderr, "ERROR: Lexer ptr is null\n");
+  } else {
+    // TODO: check to make sure lexer isn't empty?
+    m_input = m_lexer->m_results;
+  }
+}
+
 void Parser::parsing_loop() {
   using ps = PState;
   using tk = TokenKind;
@@ -185,6 +209,16 @@ void Parser::parsing_loop() {
     case PState::ParseOther:
       break;
     }
+  }
+}
+
+void Parser::push_section(string s) { m_sections.emplace_back(s); }
+
+void Parser::push_kvp(string k, string v) {
+  if (m_sections.empty()) {
+    m_kvps.emplace_back("main", k, v);
+  } else {
+    m_kvps.emplace_back(m_sections.back(), k, v);
   }
 }
 
