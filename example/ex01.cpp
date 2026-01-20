@@ -13,7 +13,9 @@ int main() {
   Parser P(&L);
   P.run();
 
-  std::print("Parser inputs: {}\n", P.m_input.size());
+  std::println("Parser inputs: {}", P.m_input.size());
+  std::printf("Sections: %zu\n", P.m_sections.size());
+  std::println("Sections: {}", P.m_sections.size());
 
   return 0;
 }

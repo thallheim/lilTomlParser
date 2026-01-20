@@ -192,6 +192,7 @@ void Parser::_push_val(string v) {
 const string ps2s(PState s) {
   using ps = PState;
   switch (s) {
+  case ps::Idle:                return "Idle";
   case ps::ParseHeading:        return "ParseHeading";
   case ps::ParseComment:        return "ParseComment";
   case ps::ParseDelim:          return "ParseDelim";
@@ -200,6 +201,7 @@ const string ps2s(PState s) {
   case ps::ParseSettingValue:   return "ParseSettingValue";
   case ps::ParseEOL:            return "EOL";
   case ps::ParseOther:          return "ParseOther";
+    break;
   }
 }
 
