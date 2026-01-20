@@ -1,5 +1,6 @@
 #include <cctype>
 #include <stdexcept>
+#include <tuple>
 #include <utility>
 #include "../include/parser.hpp"
 #include "../include/util.hpp"
@@ -153,10 +154,12 @@ void Parser::parsing_loop() {
       _push_key(t.value);
       break;
     case PState::ParseSettingValue:
+      _push_val(t.value);
       break;
     case PState::ParseEOL:
       break;
     case PState::ParseOther:
+      // TODO: create & handle error
       break;
     }
   }
@@ -174,12 +177,14 @@ void Parser::_push_key(string k) {
 }
 
 void Parser::_push_val(string v) {
+  string key = std::get<1>(m_kvps.back());
+
   if (m_sections.empty()) { // no section yet; count as global as 'main'
-    auto out = std::make_tuple("main", std::get<1>(m_kvps.back()), v);
-    std::swap(m_kvps.back(), out);
+    m_kvps.pop_back();
+    m_kvps.emplace_back("main", key, v);
   } else { // use current section
-    auto out = std::make_tuple(m_sections.back(), std::get<1>(m_kvps.back()), v);
-    std::swap(m_kvps.back(), out);
+    m_kvps.pop_back();
+    m_kvps.emplace_back(m_sections.back(), key, v);
   }
 
 }
