@@ -13,7 +13,7 @@ Kind of. Doesn't support tables in the slightest, yet.
       * [ ] parsing loop _(started)_
         * [ ] return type strat(s)?
       * [ ] test
-  * [ ] Separate lexer from parser
+  * [x] Separate lexer from parser
   * [ ] Make current custom types an optional default implementation
     * [ ] Genericise parser return somehow
         - _maybe tuple, maybe pair?_
