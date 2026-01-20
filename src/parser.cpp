@@ -174,11 +174,12 @@ void Parser::_push_key(string k) {
 }
 
 void Parser::_push_val(string v) {
-  if (m_sections.empty()) {
-    auto out = std::make_tuple("", "", v);
-
-  } else {
-    m_kvps.emplace_back(m_sections.back(), k, v);
+  if (m_sections.empty()) { // no section yet; count as global as 'main'
+    auto out = std::make_tuple("main", std::get<1>(m_kvps.back()), v);
+    std::swap(m_kvps.back(), out);
+  } else { // use current section
+    auto out = std::make_tuple(m_sections.back(), std::get<1>(m_kvps.back()), v);
+    std::swap(m_kvps.back(), out);
   }
 
 }
