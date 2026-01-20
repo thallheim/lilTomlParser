@@ -64,6 +64,7 @@ struct Parser {
 private:
   void              _init(Lexer *lexer);
   void              parsing_loop();
-  void              push_section(string s);
-  void              push_kvp(string k, string v);
+  void              _push_section(string s);
+  void              _push_key(string k);
+  void              _push_val(string v);
 };

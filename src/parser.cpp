@@ -1,5 +1,6 @@
 #include <cctype>
 #include <stdexcept>
+#include <utility>
 #include "../include/parser.hpp"
 #include "../include/util.hpp"
 #include "enums.hpp"
@@ -140,26 +141,46 @@ void Parser::parsing_loop() {
     switch (m_state) {
     case PState::Idle:
     case PState::ParseHeading:
+      _push_section(t.value);
+      break;
     case PState::ParseComment:
+      break;
     case PState::ParseDelim:
+      break;
     case PState::ParseAlNum:
+      break;
     case PState::ParseSettingKey:
+      _push_key(t.value);
+      break;
     case PState::ParseSettingValue:
+      break;
     case PState::ParseEOL:
+      break;
     case PState::ParseOther:
       break;
     }
   }
 }
 
-void Parser::push_section(string s) { m_sections.emplace_back(s); }
+void Parser::_push_section(string s) { m_sections.emplace_back(s); }
 
-void Parser::push_kvp(string k, string v) {
+void Parser::_push_key(string k) {
+  // TODO: check curr_section: if '@default@' -> set to 'main'
   if (m_sections.empty()) {
-    m_kvps.emplace_back("main", k, v);
+    m_kvps.emplace_back("main", k, "");
+  } else {
+    m_kvps.emplace_back(m_sections.back(), k, "");
+  }
+}
+
+void Parser::_push_val(string v) {
+  if (m_sections.empty()) {
+    auto out = std::make_tuple("", "", v);
+
   } else {
     m_kvps.emplace_back(m_sections.back(), k, v);
   }
+
 }
 
 // ----------------------------------------------------------------------
