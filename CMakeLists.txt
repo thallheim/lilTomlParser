@@ -19,13 +19,15 @@ target_sources(ltp
     FILE_SET HEADERS
     BASE_DIRS "include/"
     FILES
-      "include/config.hpp"
       "include/enums.hpp"
-      "include/parser.hpp"
       "include/types.hpp"
       "include/util.hpp"
+      "include/lexer.hpp"
+      "include/parser.hpp"
+      "include/config.hpp"
   PRIVATE
     "src/config.cpp"
+    "src/lexer.cpp"
     "src/parser.cpp"
     "src/util.cpp"
 )

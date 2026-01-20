@@ -1,14 +1,46 @@
 #pragma once
 
 #include <print>
+#include <map>
 
 #include "util.hpp"
 #include "enums.hpp"
-#include "types.hpp"
+
 
 // namespace fs     = std::filesystem;
 using     sview  = std::string_view;
 using     string = std::string;
+
+struct Setting {
+  string key;
+  string val;
+
+  Setting(sview key, sview val) {
+    key = key;
+    val = val;
+  }
+
+};
+
+struct Config {
+  fs::path                      m_config_fpath;
+  fs::path                      m_dirpath_home;
+  fs::path                      m_dirpath_conf;
+  std::vector<string>           m_sections;
+  std::map<string, Setting*>    m_sections_map;
+  std::vector<Setting>          m_settings;
+
+  void AddSection(sview section_name) {
+    m_sections.emplace_back(section_name);
+  }
+
+  void AddSetting(sview section, sview key, sview val) {
+    m_settings.emplace_back(Setting(key, val));
+    m_sections_map.emplace(section, &m_settings.back());
+  }
+
+};
+
 
 struct Token {
   TokenKind kind;
@@ -25,6 +57,12 @@ struct Token {
     case TokenKind::EOL:            return "EOL";
     case TokenKind::Other:          return "Other";
     }
+  }
+
+  Token() {};
+  Token(TokenKind k, string v) {
+    this->kind = k;
+    this->value = v;
   }
 
 };

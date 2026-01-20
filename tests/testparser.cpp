@@ -6,24 +6,25 @@
 using tk = TokenKind;
 
 int parser_run() {
-  Lexer L;
-  L.load(TEST_STR);
-  L.scan();
-  Parser P(L);
-  P.m_input = L.m_results;
+  Lexer L(TEST_STR);
+  Parser P(&L);
   P.run();
-  size_t i;
+  size_t i = 0;
 
-  if (P.m_results.size() != 0) {
-    for (const auto &c : P.m_results) {
+  if (P.m_input.size() != 0) {
+    for (const auto &c : P.m_input) {
       if (c.kind == tk::EOL) {
-        printf("%zu: Got %s\n", i, c.kind_as_string().c_str());
+        printf("%3zu: Tkn %s\n", i, c.kind_as_string().c_str());
       } else {
-        printf("%zu: Got %s %s\n", i, c.kind_as_string().c_str(), c.value.c_str());
+        printf("%3zu: Tkn %s %s\n", i, c.kind_as_string().c_str(), c.value.c_str());
       }
       i++;
     }
   }
+
+  std::print("<CfgParser> Results:\tSections: {}\tKVPs: {}\n",
+             P.m_sections.size(),
+             P.m_kvps.size());
 
   return 0;
 }

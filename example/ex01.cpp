@@ -10,9 +10,12 @@ int main() {
     "\n";
 
   Lexer L(in);
-  Parser P(L);
-  P.m_input = L.m_results;
+  Parser P(&L);
   P.run();
+
+  std::println("Parser inputs: {}", P.m_input.size());
+  std::printf("Sections: %zu\n", P.m_sections.size());
+  std::println("Sections: {}", P.m_sections.size());
 
   return 0;
 }

@@ -6,6 +6,9 @@ alias l := _pick
 @_pick:
     just --choose
 
+##################################################
+# BUILDING
+##################################################
 
 alias b := build
 [group("build"), doc("Build - debug config")]
@@ -24,6 +27,9 @@ alias bc := build-clang
     make
 
 
+##################################################
+# CONFIGURING
+##################################################
 
 alias conf := configure
 [group("configure build"), doc("Configure for Ninja")]
@@ -47,6 +53,10 @@ alias reconf-make := reconfigure-make
     cmake -B build -S . --fresh
 
 
+##################################################
+# TESTING
+##################################################
+
 alias ta := test-all-debug
 [group("Unit tests"), doc("Run all unit tests")]
 @test-all-debug:
@@ -63,6 +73,20 @@ alias lt := list-tests
     ctest --test-dir build/ -N
 
 alias t := test
-[group("Unit tests"), doc("Run specific unit test")]
+[group("Unit tests"), doc("Run specific unit test (Debug conf.)")]
 @test ARG:
-    ctest --test-dir build/ --output-on-failure -R {{ARG}}
+    ctest --test-dir build/ --output-on-failure -C "Debug" -R {{ARG}}
+
+alias tr := test-release
+[group("Unit tests"), doc("Run specific unit test (Release conf.)")]
+@test-release ARG:
+    ctest --test-dir build/ --output-on-failure -C "Release" -R {{ARG}}
+
+##################################################
+# DEV/MISC./TEMP
+##################################################
+
+alias dp := dev-parser
+[group("Dev"), doc("Run parser test binary directly (debug conf.)")]
+@dev-parser:
+    ./build/tests/Debug/parser_test parser-run

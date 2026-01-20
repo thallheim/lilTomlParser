@@ -1,66 +1,11 @@
 #include <cctype>
 #include <stdexcept>
+#include <tuple>
+#include <utility>
 #include "../include/parser.hpp"
 #include "../include/util.hpp"
+#include "enums.hpp"
 
-
-// ----------------------------------------------------------------------
-// Lexer
-// ----------------------------------------------------------------------
-void Lexer::load(const string &str) {
-  m_inbuf = str;
-  m_cursor = 0;
-}
-
-void Lexer::scan() {
-  using tk = TokenKind;
-  m_cursor = 0; // reset cursor
-  Token  out;   // output 'buffer' obj.
-  char   cc;    // current char
-
-  while (m_cursor < m_inbuf.size()) { // scanning loop
-    cc = get_ch();
-    out.value = cc;
-
-    if (eol()) { out.kind = tk::EOL; }
-    else if (std::isspace(cc)) { m_cursor++; continue; }
-    else if (cc == '[' || cc == ']' || cc == '=') { out.kind = tk::Delim; }
-    // TODO: don't skip WS inside comments
-    else if (cc == '#') { out.kind = tk::Comment; }
-    else if (is_alnum(cc)) { out.kind = tk::AlNum; }
-    else { out.kind = tk::Other; }
-
-    m_results.emplace_back(out);
-    m_cursor++;
-  }
-}
-
-inline char Lexer::get_ch() {
-  if (m_cursor > m_inbuf.size())
-    return '\0';
-  return m_inbuf[m_cursor];
-}
-
-bool Lexer::eol() {
-  if (get_ch() == '\n' || get_ch() == '\0')
-    return true;
-  return false;
-}
-
-// FIXME: bwoken
-char Lexer::peek(bool skip_ws) {
-  size_t i = m_cursor+1;
-  if (!skip_ws) return m_inbuf[i];
-
-  if (is_alnum(m_inbuf[i])) return m_inbuf[i];
-
-  while (std::isspace(m_inbuf[i])) {
-    i++;
-    if (is_alnum(m_inbuf[i])) return m_inbuf[i];
-  }
-
-  return '\0';
-}
 
 // ----------------------------------------------------------------------
 // Parser
@@ -74,62 +19,22 @@ const PError* Parser::get_last_error() {
   return nullptr;
 }
 
-std::vector<Token> Parser::run() {
+void Parser::run() {
   using tk = TokenKind;
   using ps = PState;
+  // string section = "@default@";
 
-  string    section;
-
-  printf("<CfgParser> [b]%zu[/] tokens to parse\n", m_input.size());
-
-  // Main parsing loop
-  while (m_cursor < m_input.size()) {
-
-    m_prev_state = m_state;
-
-    switch (get_tkn().kind) {
-    case tk::Heading: {
-      section = get_tkn().value;
-      m_state = PState::ParseHeading;
-      printf("<CfgParser> Got section: '%s'\n", get_tkn().value.c_str());
-      break;
-    }
-    case tk::Comment: {
-      m_state = ps::ParseComment;
-      printf("<CfgParser> Got comment: '%s'\n", get_tkn().value.c_str());
-      break;
-    }
-    case tk::AlNum: {
-      m_state = ps::ParseAlNum;
-      parse_alnum();
-      break;
-    }
-    case tk::Delim:        { m_state = ps::ParseDelim;                break; }
-    case tk::SettingKey:   { m_state = ps::ParseSettingKey;           break; }
-    case tk::SettingValue: { m_state = ps::ParseSettingValue;         break; }
-    case tk::EOL: {
-      printf("<CfgParser> Got EOL\n");
-      m_state = ps::ParseEOL;
-      if (m_prev_state == ps::ParseSettingKey) {
-        m_input[m_cursor-1].kind = tk::Other; // "downgrade" prev. token
-      }
-
-      break;
-    }
-    case tk::Other: {
-      m_state = ps::ParseOther;
-      printf("<CfgParser> Got unknown token: '%s'\n", get_tkn().value.c_str());
-      // TODO: reg. & log parse error: unknown tkn
-      break;
-    }
-    }
-    m_results.emplace_back();
-    m_cursor++;
+  if (!m_input.empty()) { // all's well - parse away
+    parsing_loop();
   }
-  printf("<CfgParser> Done (%zu errors) (%zu results)\n",
-         m_errors.size(),m_results.size());
+  else { // empty input
+    const string emsg = "<CfgParser> Input empty";
+    error(PErrorKind::ParseError, emsg);
+    std::print(stderr, "ERROR: {}", emsg);
+    return;
+  }
 
-  return m_results;
+
 }
 
 bool Parser::expect(TokenKind k) {
@@ -141,9 +46,9 @@ bool Parser::expect(TokenKind k) {
 Token* Parser::peek() {
   if (m_cursor+1 <= m_input.size()) return &m_input[m_cursor+1];
   const string emsg = "<CfgParser> Tried to peek past end of input\n";
-  printf("%s", emsg.c_str());
+  std::print("{}\n", emsg);
   error(PErrorKind::OutOfRange, emsg);
-  throw std::out_of_range("Cant peek past end of input");
+  throw std::out_of_range("Can't peek past end of input");
 }
 
 // TODO: don't throw
@@ -169,6 +74,7 @@ void Parser::promote_alnum(TokenKind new_kind) {
 
 PState Parser::next() {
   switch (m_state) {
+  case PState::Idle:
   case PState::ParseHeading:
   case PState::ParseComment:
   case PState::ParseDelim:
@@ -204,12 +110,89 @@ void Parser::parse_alnum() {
   }
 }
 
+void Parser::_init(Lexer *lexer) {
+  // set idle to start
+  m_state = PState::Idle;
+
+  // Populate state map
+  m_state_map.emplace(tk::AlNum,        PState::ParseAlNum);
+  m_state_map.emplace(tk::Comment,      PState::ParseComment);
+  m_state_map.emplace(tk::Delim,        PState::ParseDelim);
+  m_state_map.emplace(tk::EOL,          PState::ParseEOL);
+  m_state_map.emplace(tk::Heading,      PState::ParseHeading);
+  m_state_map.emplace(tk::SettingKey,   PState::ParseSettingKey);
+  m_state_map.emplace(tk::SettingValue, PState::ParseSettingValue);
+  m_state_map.emplace(tk::Other,        PState::ParseOther);
+
+  if (lexer == nullptr) { // no lexer == no good
+    // TODO: add error kind 'fatal' or some such?
+    error(PErrorKind::ParseError, "Lexer ptr is null");
+    std::print(stderr, "ERROR: Lexer ptr is null\n");
+  } else {
+    // TODO: check to make sure lexer isn't empty?
+    m_input = m_lexer->m_results;
+  }
+}
+
+void Parser::parsing_loop() {
+  using ps = PState;
+  using tk = TokenKind;
+  m_cursor = 0; // reset cursor
+
+  for (auto &t : m_input) {
+    m_prev_state = m_state;
+    m_state = m_state_map[t.kind];
+
+    switch (m_state) {
+    case PState::ParseHeading:
+      _push_section(t.value);
+      break;
+    case PState::ParseSettingKey:
+      _push_key(t.value);
+      break;
+    case PState::ParseSettingValue:
+      _push_val(t.value);
+      break;
+    case PState::ParseOther:
+      // TODO: create & handle error
+      break;
+    default:
+      break;
+    }
+  }
+}
+
+void Parser::_push_section(string s) { m_sections.emplace_back(s); }
+
+void Parser::_push_key(string k) {
+  // TODO: check curr_section: if '@default@' -> set to 'main'
+  if (m_sections.empty()) {
+    m_kvps.emplace_back("main", k, "");
+  } else {
+    m_kvps.emplace_back(m_sections.back(), k, "");
+  }
+}
+
+void Parser::_push_val(string v) {
+  string key = std::get<1>(m_kvps.back());
+
+  if (m_sections.empty()) { // no section yet; count as global as 'main'
+    m_kvps.pop_back();
+    m_kvps.emplace_back("main", key, v);
+  } else { // use current section
+    m_kvps.pop_back();
+    m_kvps.emplace_back(m_sections.back(), key, v);
+  }
+
+}
+
 // ----------------------------------------------------------------------
 // Stringification helpers
 // ----------------------------------------------------------------------
 const string ps2s(PState s) {
   using ps = PState;
   switch (s) {
+  case ps::Idle:                return "Idle";
   case ps::ParseHeading:        return "ParseHeading";
   case ps::ParseComment:        return "ParseComment";
   case ps::ParseDelim:          return "ParseDelim";
@@ -218,6 +201,7 @@ const string ps2s(PState s) {
   case ps::ParseSettingValue:   return "ParseSettingValue";
   case ps::ParseEOL:            return "EOL";
   case ps::ParseOther:          return "ParseOther";
+    break;
   }
 }
 
@@ -226,6 +210,6 @@ const string pe2s(PEvent e) {
   switch (e) {
   case pe::ParseOk:             return "ParseOk";
   case pe::ParseFail:           return "ParseFail";
-  case pe::Input:               return "Input received";
+  case pe::NewInput:               return "Input received";
   }
 }
