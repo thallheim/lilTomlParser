@@ -15,6 +15,7 @@ using tk     = TokenKind;
 using std::string;
 using std::map;
 using std::pair;
+using std::tuple;
 using std::vector;
 
 
@@ -25,21 +26,26 @@ const string ps2s(PState s);
 /// Parser event as const string.
 const string pe2s(PEvent e);
 
+enum class PImplementation : uint8_t {
+  Default = 0,
+
+};
+
 
 // ----------------------------------------------------------------------
 // Parser
 // ----------------------------------------------------------------------
 struct Parser {
-  Lexer                                       *m_lexer;
-  PState                                      m_prev_state;
-  PState                                      m_state;
-  map<TokenKind, PState>                      m_state_map;
-  vector<PError>                              m_errors;
+  Lexer                                  *m_lexer;
+  PState                                 m_prev_state;
+  PState                                 m_state;
+  map<TokenKind, PState>                 m_state_map;
+  vector<PError>                         m_errors;
   // TODO: save a copy: make ptr to lexer output vec
-  vector<Token>                               m_input;
-  size_t                                      m_cursor = 0;
-  vector<string>                              m_sections;
-  vector<std::tuple<string, string, string>>  m_kvps;
+  vector<Token>                          m_input;
+  size_t                                 m_cursor = 0;
+  vector<string>                         m_sections;
+  vector<tuple<string, string, string>>  m_kvps;
 
   Parser(Lexer *lexer) : m_lexer(lexer) {
     _init(lexer);

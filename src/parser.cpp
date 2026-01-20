@@ -20,12 +20,10 @@ const PError* Parser::get_last_error() {
 void Parser::run() {
   using tk = TokenKind;
   using ps = PState;
-  string section = "@default@";
+  // string section = "@default@";
 
-  if (!m_input.empty()) {
-    parsing_loop();
-  } else { // empty input
-    // TODO:
+  if (!m_input.empty()) { parsing_loop(); } // all's well - parse away
+  else {                                    // empty input
     const string emsg = "<CfgParser> Input empty";
     error(PErrorKind::ParseError, emsg);
     std::print(stderr, "ERROR: {}", emsg);
